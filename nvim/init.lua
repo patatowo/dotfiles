@@ -137,7 +137,8 @@ local plugins = {
         nmap º :FloatermToggle<CR>
       ]])
     end
-  }
+  },
+  { "alec-gibson/nvim-tetris" }
 }
 
 local opts = {}
