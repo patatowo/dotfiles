@@ -1,3 +1,8 @@
+vim.cmd([[
+set nocompatible
+set termguicolors
+]])
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -76,6 +81,62 @@ local plugins = {
 		nnoremap <silent> K :call ShowDocumentation()<CR>
 	    ]])
     end
+  },
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+      "MunifTanjim/nui.nvim",
+      -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
+    },
+    config = function()
+      vim.cmd("nnoremap B <cmd>Neotree toggle<CR>")
+    end
+  },
+  {
+    "willothy/nvim-cokeline",
+    dependencies = {
+      "nvim-lua/plenary.nvim",        -- Required for v0.4.0+
+      "kyazdani42/nvim-web-devicons", -- If you want devicons
+      "stevearc/resession.nvim"       -- Optional, for persistent history
+    },
+    config = true
+  },
+  {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    opts = {
+      -- add any options here
+    },
+    dependencies = {
+      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+      "MunifTanjim/nui.nvim",
+      -- OPTIONAL:
+      --   `nvim-notify` is only needed, if you want to use the notification view.
+      --   If not available, we use `mini` as the fallback
+      "rcarriga/nvim-notify",
+    }
+  },
+  {
+    'voldikss/vim-floaterm',
+    config = function()
+      vim.cmd([[
+        if has('win64') || has('win32')
+          let &shell = executable('pwsh') ? 'pwsh' : 'powershell'
+          let &shellcmdflag = '-NoLogo -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues[''Out-File:Encoding'']=''utf8'';'
+          let &shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
+          let &shellpipe  = '2>&1 | %%{ "$_" } | Tee-Object %s; exit $LastExitCode'
+          set shellquote= shellxquote=
+
+          let g:floaterm_shell='powershell'
+        endif
+
+        tnoremap <Esc> <C-\><C-n>
+        nmap º :FloatermToggle<CR>
+      ]])
+    end
   }
 }
 
@@ -83,6 +144,7 @@ local opts = {}
 
 require("lazy").setup(plugins, opts)
 
+-- Set two spaces indentation
 vim.cmd([[
 set expandtab
 set tabstop=2
